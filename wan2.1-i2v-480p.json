@@ -1,0 +1,201 @@
+{
+  "1": {
+    "inputs": {
+      "ckpt_name": "wan2.1-i2v-480p.safetensors"
+    },
+    "class_type": "CheckpointLoaderSimple",
+    "id": 1,
+    "title": "Load Checkpoint"
+  },
+  "2": {
+    "inputs": {
+      "image": "image.png",
+      "upload": "image"
+    },
+    "class_type": "LoadImage",
+    "id": 2,
+    "title": "Load Image"
+  },
+  "3": {
+    "inputs": {
+      "pixels": [
+        2,
+        0
+      ],
+      "vae": [
+        1,
+        2
+      ]
+    },
+    "class_type": "VAEEncode",
+    "id": 3,
+    "title": "Encode Image to Latent"
+  },
+  "4": {
+    "inputs": {
+      "text": "a smooth camera pan across a serene landscape, cinematic lighting"
+    },
+    "class_type": "CLIPTextEncode",
+    "id": 4,
+    "title": "Positive Text Encoding"
+  },
+  "5": {
+    "inputs": {
+      "text": "static, distorted, blurry, low quality"
+    },
+    "class_type": "CLIPTextEncode",
+    "id": 5,
+    "title": "Negative Text Encoding"
+  },
+  "6": {
+    "inputs": {
+      "clip": [
+        1,
+        1
+      ],
+      "text": ""
+    },
+    "class_type": "CLIPTextEncode",
+    "id": 6,
+    "title": "Empty Positive Prompt"
+  },
+  "7": {
+    "inputs": {
+      "clip": [
+        1,
+        1
+      ],
+      "text": ""
+    },
+    "class_type": "CLIPTextEncode",
+    "id": 7,
+    "title": "Empty Negative Prompt"
+  },
+  "8": {
+    "inputs": {
+      "length": 32,
+      "batch_size": 1
+    },
+    "class_type": "FrameLengthNode",
+    "id": 8,
+    "title": "Set Frame Length"
+  },
+  "9": {
+    "inputs": {
+      "seed": 42,
+      "steps": 25,
+      "cfg": 7.5,
+      "sampler_name": "euler",
+      "scheduler": "karras",
+      "denoise": 1.0,
+      "model": [
+        1,
+        0
+      ],
+      "positive": [
+        4,
+        0
+      ],
+      "negative": [
+        5,
+        0
+      ],
+      "latent_image": [
+        3,
+        0
+      ],
+      "frame_count": [
+        8,
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "id": 9,
+    "title": "KSampler - I2V Generation"
+  },
+  "10": {
+    "inputs": {
+      "samples": [
+        9,
+        0
+      ],
+      "vae": [
+        1,
+        2
+      ]
+    },
+    "class_type": "VAEDecode",
+    "id": 10,
+    "title": "Decode Video Latents"
+  },
+  "11": {
+    "inputs": {
+      "format": "video/mp4",
+      "codec": "h264",
+      "quality": 95,
+      "fps": 24,
+      "optimize_for_streaming": false
+    },
+    "class_type": "VHS_VideoCombine",
+    "id": 11,
+    "title": "Combine Frames to Video"
+  },
+  "12": {
+    "inputs": {
+      "filename_prefix": "wan2.1-i2v-480p",
+      "images": [
+        10,
+        0
+      ],
+      "format": "png"
+    },
+    "class_type": "SaveImage",
+    "id": 12,
+    "title": "Save Output Frames"
+  },
+  "13": {
+    "inputs": {
+      "filename_prefix": "wan2.1-i2v-480p",
+      "video": [
+        11,
+        0
+      ]
+    },
+    "class_type": "VHS_VideoOutput",
+    "id": 13,
+    "title": "Save Video Output"
+  },
+  "14": {
+    "inputs": {
+      "value": 8,
+      "vram_required_mb": 8192
+    },
+    "class_type": "VARAMProfiler",
+    "id": 14,
+    "title": "VRAM Optimization - RTX 3070 8GB"
+  },
+  "15": {
+    "inputs": {
+      "enable_cpu_offload": true,
+      "enable_memory_efficient_attention": true,
+      "tile_size": 512,
+      "tiling_strategy": "split"
+    },
+    "class_type": "MemoryOptimization",
+    "id": 15,
+    "title": "Memory Efficient Configuration"
+  },
+  "16": {
+    "inputs": {
+      "batches": 1,
+      "batch_size": 1,
+      "frames": 32,
+      "height": 480,
+      "width": 854,
+      "length": 32
+    },
+    "class_type": "PrimitiveNode",
+    "id": 16,
+    "title": "Video Generation Parameters"
+  }
+}
